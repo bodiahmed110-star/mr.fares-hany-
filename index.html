@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Scorpion of English | Mr. Fares Hany</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #080504;
+            --card-bg: rgba(22, 13, 9, 0.7);
+            --gold: #f39c12;
+            --gold-glow: #ffb830;
+            --brown-neon: #964b1d;
+            --whatsapp: #25d366;
+            --facebook: #1877f2;
+            --instagram: #e1306c;
+            --text-main: #ffffff;
+            --text-sub: #d3c4bc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.22;
+        }
+
+        .hero-viewport {
+            position: relative;
+            z-index: 2;
+            height: 55vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(8, 5, 4, 0.1), var(--bg-dark)), 
+                        url('https://images.stockcake.com/public/7/1/f/71f9c8bd-7f28-4a13-a8b4-df079dcd42ec/neon-desert-scorpion-stockcake.jpg') center/cover no-repeat;
+            border-bottom: 1px solid rgba(243, 156, 18, 0.2);
+        }
+
+        .hero-shading {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, var(--bg-dark) 90%);
+            z-index: 1;
+        }
+
+        .hero-text-box {
+            position: relative;
+            z-index: 2;
+            padding: 0 20px;
+        }
+
+        .badge-premium {
+            background: linear-gradient(90deg, #502814, var(--brown-neon));
+            border: 1px solid var(--gold);
+            padding: 6px 24px;
+            border-radius: 50px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 800;
+            color: var(--gold-glow);
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.3);
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .hero-name {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-shadow: 0 0 20px rgba(0,0,0,0.9);
+            margin-bottom: 10px;
+        }
+
+        .hero-name span {
+            color: var(--gold);
+            text-shadow: 0 0 15px rgba(243, 156, 18, 0.6);
+        }
+
+        .hero-tagline {
+            color: var(--text-sub);
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            word-spacing: 3px;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: -40px auto 60px;
+            padding: 0 24px;
+        }
+
+        .dual-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 960px) {
+            .dual-grid { grid-template-columns: 1fr; }
+            .hero-name { font-size: 2.8rem; }
+            .hero-viewport { height: 45vh; }
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            border-radius: 28px;
+            padding: 45px 35px;
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.75);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold-glow);
+            box-shadow: 0 35px 70px rgba(243, 156, 18, 0.2);
+        }
+
+        .en-layout { direction: ltr; text-align: left; }
+        .ar-layout { direction: rtl; text-align: right; }
+
+        .card-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--gold-glow);
+            margin-bottom: 8px;
+        }
+        .ar-layout .card-title { font-family: 'Cairo', sans-serif; font-weight: 900; }
+
+        .card-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-sub);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .card-subtitle i { color: var(--gold); }
+
+        .luxury-row {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            background: rgba(8, 5, 4, 0.5);
+            padding: 22px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            border-inline-start: 5px solid var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .luxury-row:hover {
+            background: rgba(150, 75, 29, 0.2);
+            transform: scale(1.02);
+        }
+
+        .icon-wrapper {
+            background: rgba(243, 156, 18, 0.12);
+            color: var(--gold-glow);
+            width: 52px;
+            height: 52px;
+            min-width: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+        }
+
+        .text-stack { display: flex; flex-direction: column; }
+
+        .row-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--gold);
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .row-value {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .dynamic-cta-grid {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .premium-btn {
+            padding: 16px 38px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.08);
+            cursor: pointer;
+        }
+
+        .btn-wa {
+            background: linear-gradient(135deg, #1f9c4f, var(--whatsapp));
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.25);
+        }
+        .btn-wa:hover {
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.45);
+        }
+
+        .btn-fb {
+            background: linear-gradient(135deg, #145dbf, var(--facebook));
+        }
+        .btn-insta {
+            background: linear-gradient(135deg, #8a3ab9, #e1306c, #fbad50);
+        }
+
+        .premium-btn:hover {
+            transform: translateY(-5px);
+            filter: brightness(1.15);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <section class="hero-viewport">
+        <div class="hero-shading"></div>
+        <div class="hero-text-box">
+            <span class="badge-premium">The Scorpion Elite Elite</span>
+            <h1 class="hero-name">MR. <span>FARES HANY</span></h1>
+            <p class="hero-tagline">AN UNMATCHED ENGLISH EXPERIENCE</p>
+        </div>
+    </section>
+
+    <main class="content-wrapper">
+        <div class="dual-grid">
+            
+            <!-- ENGLISH SIDE -->
+            <article class="glass-card en-layout">
+                <h2 class="card-title">Fares Hany</h2>
+                <div class="card-subtitle">
+                    <i class="fa-solid fa-bolt-lightning"></i> Ultimate English Authority
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">Academic Pedigree</span>
+                        <span class="row-value">KFS University — Faculty of Arts (English Department)</span>
+                    </div>
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-crosshairs"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">Target Segments</span>
+                        <span class="row-value">Preparatory & Secondary Educational Stages</span>
+                    </div>
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">Instructor Profile</span>
+                        <span class="row-value">26 Years Old — Elite Modern Mentorship</span>
+                    </div>
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-map-pinned"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">HQ Location</span>
+                        <span class="row-value">Kafr El-Sheikh, Al-Riyadh Center</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ARABIC SIDE -->
+            <article class="glass-card ar-layout">
+                <h2 class="card-title">مستر فارس هاني</h2>
+                <div class="card-subtitle">
+                    <i class="fa-solid fa-bolt-lightning"></i> القوة المطلقة في تدريس الإنجليزية
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">الخلفية الأكاديمية</span>
+                        <span class="row-value">جامعة كفر الشيخ — كلية الآداب (قسم اللغة الإنجليزية)</span>
+                    </div>
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-crosshairs"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">المراحل المستهدفة</span>
+                        <span class="row-value">صناعة وتأسيس عباقرة المرحلة الإعدادية والثانوية</span>
+                    </div>
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">مواصفات المحاضر</span>
+                        <span class="row-value">٢٦ عاماً — كفاءة شابة تقود الفكر التعليمي الحديث</span>
+                    </div>
+                </div>
+
+                <div class="luxury-row">
+                    <div class="icon-wrapper"><i class="fa-solid fa-map-pinned"></i></div>
+                    <div class="text-stack">
+                        <span class="row-label">المقر الرئيسي</span>
+                        <span class="row-value">كفر الشيخ — مركز الرياض</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ACTION BUTTONS GRID -->
+            <div class="dynamic-cta-grid">
+                <a href="https://wa.me/201096954340?text=Hello%20Mr.%20Fares,%20I%20want%20to%20inquire%20about%20English%20classes." target="_blank" class="premium-btn btn-wa">
+                    <i class="fa-brands fa-whatsapp fa-lg"></i> تواصل فوري عبر واتساب / WhatsApp
+                </a>
+                <a href="https://www.facebook.com/share/1BcjiibK1S/" target="_blank" class="premium-btn btn-fb">
+                    <i class="fa-brands fa-facebook-f"></i> Facebook Community
+                </a>
+                <a href="https://www.instagram.com/mr_fares22?igsh=dGhseHM0eWl1eDE3" target="_blank" class="premium-btn btn-insta">
+                    <i class="fa-brands fa-instagram"></i> Instagram Profile
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        const letters = alphabet.split("");
+        const fontSize = 15;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(8, 5, 4, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px Plus Jakarta Sans, sans-serif';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                
+                if (Math.random() > 0.85) {
+                    ctx.fillStyle = '#ffb830'; 
+                } else if (Math.random() > 0.5) {
+                    ctx.fillStyle = '#964b1d';
+                } else {
+                    ctx.fillStyle = '#4a250f';
+                }
+
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+    </script>
+</body>
+</html>
